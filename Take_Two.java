@@ -1,5 +1,3 @@
-package take_two;
-
 import java.awt.*;
 import java.awt.event.*;
 
