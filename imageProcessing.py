@@ -55,7 +55,7 @@ def getBlockColor(startRow, endRow, startCol, endCol, threshImgs):
 	
 	# find the blocks color by finding the color with most white pixels
 	# this is just the simple alg of going through and saving the max
-	blockColor = ""
+	blockColor = "Black"
 	blockColorTally = 0
 	for color in colors:
 		if color[1] > blockColorTally:
@@ -66,6 +66,7 @@ def getBlockColor(startRow, endRow, startCol, endCol, threshImgs):
 
 
 def getAllBlockColors(threshImgs):
+	global blocks
 	# Just gets the block colors for the 6 blocks, starting from the next to
 	# block to be chosen
 	blocks.append(getBlockColor(145, 155, 270, 280, threshImgs))# Block 1
@@ -74,9 +75,31 @@ def getAllBlockColors(threshImgs):
 	blocks.append(getBlockColor(95, 105, 130, 140, threshImgs))	# Block 4
 	blocks.append(getBlockColor(65, 75, 80, 90, threshImgs))	# Block 5
 	blocks.append(getBlockColor(20, 30, 5, 15, threshImgs))		# Block 6
+	blocks.append('Black')
+	blocks.append('Gray')
+	blocks.append('Red')
+	blocks.append('Green')
+
+
+def processBlocks():
+	# This function deletes everything including & after the first 'Black' block
+	global blocks
+	seenBlack = False
+	index = 0
+	for block in blocks:
+		if block == 'Black':
+			seenBlack = True
+			break
+		index = index + 1
+
+	if seenBlack:
+		 blocks = blocks[0:index-1]
+
+
 
 if __name__ == "__main__":
 	# Remember getBlockColor(startY, EndY, startX, EndX)
 	threshImgs = createThresholdImages("Blocks.png")
 	getAllBlockColors(threshImgs)
+	processBlocks()
 	print blocks
