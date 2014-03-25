@@ -23,17 +23,24 @@ def createThresholdImages(imgPath):
 	# block color 
 	threshImgs = []
 	BLUE = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
-	threshImgs.append(cv2.inRange(BLUE, BLUE_MIN, BLUE_MAX))
+	BLUE_PHOTO = cv2.inRange(BLUE, BLUE_MIN, BLUE_MAX)
+	threshImgs.append(BLUE_PHOTO)
+	cv2.imwrite('Block Photos/BlueBlocks.png', BLUE_PHOTO)
 	
 	GREEN = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
-	threshImgs.append(cv2.inRange(GREEN, GREEN_MIN, GREEN_MAX))
+	GREEN_PHOTO = cv2.inRange(GREEN, GREEN_MIN, GREEN_MAX)
+	threshImgs.append(GREEN_PHOTO)
+	cv2.imwrite('Block Photos/GreenBlocks.png', GREEN_PHOTO)
 		
 	RED = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
-	threshImgs.append(cv2.inRange(RED, RED_MIN, RED_MAX))
+	RED_PHOTO = cv2.inRange(RED, RED_MIN, RED_MAX)
+	threshImgs.append(RED_PHOTO)
+	cv2.imwrite('Block Photos/RedBlocks.png', RED_PHOTO)
 	
 	WHITE = cv2.imread(imgPath, cv2.CV_LOAD_IMAGE_GRAYSCALE)
-	(thresh, im_bw) = cv2.threshold(WHITE, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-	threshImgs.append(im_bw)
+	(thresh, WHITE_PHOTO) = cv2.threshold(WHITE, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+	threshImgs.append(WHITE_PHOTO)
+	cv2.imwrite('Block Photos/WhiteBlocks.png', WHITE_PHOTO)
 	
 	return threshImgs
 
@@ -55,7 +62,7 @@ def getBlockColor(startRow, endRow, startCol, endCol, threshImgs):
 	
 	# find the blocks color by finding the color with most white pixels
 	# this is just the simple alg of going through and saving the max
-	blockColor = "Black"
+	blockColor = 'Black'
 	blockColorTally = 0
 	for color in colors:
 		if color[1] > blockColorTally:
@@ -75,11 +82,6 @@ def getAllBlockColors(threshImgs):
 	blocks.append(getBlockColor(95, 105, 130, 140, threshImgs))	# Block 4
 	blocks.append(getBlockColor(65, 75, 80, 90, threshImgs))	# Block 5
 	blocks.append(getBlockColor(20, 30, 5, 15, threshImgs))		# Block 6
-	blocks.append('Black')
-	blocks.append('Gray')
-	blocks.append('Red')
-	blocks.append('Green')
-
 
 def processBlocks():
 	# This function deletes everything including & after the first 'Black' block
@@ -93,13 +95,14 @@ def processBlocks():
 		index = index + 1
 
 	if seenBlack:
-		 blocks = blocks[0:index-1]
+		 blocks = blocks[0:index]
 
 
 
 if __name__ == "__main__":
 	# Remember getBlockColor(startY, EndY, startX, EndX)
-	threshImgs = createThresholdImages("Blocks.png")
+	threshImgs = createThresholdImages("Block Photos/Blocks.jpg")
 	getAllBlockColors(threshImgs)
+	print blocks
 	processBlocks()
 	print blocks
